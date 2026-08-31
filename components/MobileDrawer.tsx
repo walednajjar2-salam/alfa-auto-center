@@ -53,7 +53,11 @@ export default function MobileDrawer({ open, onClose, pathname }: Props) {
   return (
     <>
       {open && <button className="drawer-backdrop" aria-label="إغلاق القائمة" onClick={onClose} />}
-      <aside className={`mobile-drawer ${open ? "open" : ""}`}>
+      <aside
+        className={`mobile-drawer ${open ? "open" : ""}`}
+        aria-hidden={!open}
+        {...(!open ? { inert: true } : {})}
+      >
         <div className="drawer-head">
           <div>
             <strong>ALFA</strong>

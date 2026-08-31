@@ -25,6 +25,26 @@ enum WorkOrderStatus {
   CANCELLED
 }
 
+enum ItemKind {
+  LABOR
+  PART
+}
+
+enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  PARTIAL
+  PAID
+  VOID
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+  TRANSFER
+  OTHER
+}
+
 model User {
   id           String   @id @default(cuid())
   name         String
@@ -37,14 +57,16 @@ model User {
 }
 
 model Customer {
-  id        String    @id @default(cuid())
-  name      String
-  phone     String    @unique
-  whatsapp  String?
-  notes     String?
-  vehicles  Vehicle[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id         String      @id @default(cuid())
+  name       String
+  phone      String      @unique
+  whatsapp   String?
+  notes      String?
+  vehicles   Vehicle[]
+  workOrders WorkOrder[]
+  invoices   Invoice[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 }
 
 model Vehicle {
@@ -63,17 +85,95 @@ model Vehicle {
   updatedAt   DateTime    @updatedAt
 
   @@index([plateNumber])
+  @@index([customerId])
 }
 
 model WorkOrder {
-  id          String          @id @default(cuid())
-  orderNumber String          @unique
-  vehicleId   String
-  vehicle     Vehicle         @relation(fields: [vehicleId], references: [id])
-  status      WorkOrderStatus @default(RECEIVED)
-  complaint   String
-  mileage     Int?
-  notes       String?
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
+  id           String           @id @default(cuid())
+  orderNumber  String           @unique
+  customerId   String
+  customer     Customer         @relation(fields: [customerId], references: [id])
+  vehicleId    String
+  vehicle      Vehicle          @relation(fields: [vehicleId], references: [id])
+  status       WorkOrderStatus  @default(RECEIVED)
+  complaint    String
+  mileage      Int?
+  notes        String?
+  items        WorkOrderItem[]
+  inspections  Inspection[]
+  invoice      Invoice?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@index([status])
+  @@index([customerId])
+  @@index([vehicleId])
+}
+
+model WorkOrderItem {
+  id          String    @id @default(cuid())
+  workOrderId String
+  workOrder   WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
+  kind        ItemKind  @default(LABOR)
+  description String
+  quantity    Float     @default(1)
+  unitPrice   Float     @default(0)
+  createdAt   DateTime  @default(now())
+}
+
+model Inspection {
+  id                String    @id @default(cuid())
+  workOrderId       String
+  workOrder         WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
+  findings          String
+  diagnosis         String?
+  recommendations   String?
+  estimatedLabor    Float     @default(0)
+  estimatedParts    Float     @default(0)
+  customerApproved  Boolean?
+  approvalNote      String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model Invoice {
+  id            String        @id @default(cuid())
+  invoiceNumber String        @unique
+  customerId    String
+  customer      Customer      @relation(fields: [customerId], references: [id])
+  workOrderId   String?       @unique
+  workOrder     WorkOrder?    @relation(fields: [workOrderId], references: [id])
+  status        InvoiceStatus @default(DRAFT)
+  subtotal      Float         @default(0)
+  tax           Float         @default(0)
+  total         Float         @default(0)
+  notes         String?
+  items         InvoiceItem[]
+  payments      Payment[]
+  issuedAt      DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([customerId])
+  @@index([status])
+}
+
+model InvoiceItem {
+  id          String  @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  description String
+  quantity    Float   @default(1)
+  unitPrice   Float   @default(0)
+}
+
+model Payment {
+  id        String        @id @default(cuid())
+  invoiceId String
+  invoice   Invoice       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  amount    Float
+  method    PaymentMethod @default(CASH)
+  notes     String?
+  paidAt    DateTime      @default(now())
+  createdAt DateTime      @default(now())
 }

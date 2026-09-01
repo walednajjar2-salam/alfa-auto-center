@@ -2,6 +2,10 @@
 
 نظام إدارة عربي للجوال: استقبال، فحص، صيانة، فواتير، مخزون، وصندوق.
 
+- المستودع: https://github.com/walednajjar2-salam/alfa-auto-center
+- صفحة GitHub: https://walednajjar2-salam.github.io/alfa-auto-center/
+- لوحة Railway: https://railway.com/project/8c3b0eb7-0e57-4c5c-aa52-ae7cafa53291
+
 ## الدخول
 - المستخدم: `admin`
 - كلمة المرور الافتراضية: `Alfa@2026` — غيّرها بعد أول دخول.
@@ -37,9 +41,10 @@ npm run dev
 ```
 
 ## Railway
+المشروع مربوط بـ GitHub وينشر من فرع `main`.
 1. اربط PostgreSQL ليُحقن `DATABASE_URL`.
 2. عيّن `AUTH_SECRET` و`AUTH_TRUST_HOST=true` و`AUTH_URL` و`ADMIN_PASSWORD`.
 3. اختياري: `SEED_DEMO=true` ثم نفّذ البذرة مرة واحدة.
-4. البناء: `npm run build` — التشغيل: `npm run start`
+4. البناء: `npm run build` — التشغيل: `npm run start:prod`
 
 GitHub Pages يعرض صفحة تعريف فقط؛ التطبيق يعمل على Railway.

@@ -5,10 +5,9 @@
     "buildCommand": "npm run build"
   },
   "deploy": {
-    "preDeployCommand": "npx prisma db push",
-    "startCommand": "npm run start",
+    "startCommand": "npm run start:prod",
     "healthcheckPath": "/login",
-    "healthcheckTimeout": 120,
+    "healthcheckTimeout": 180,
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   }

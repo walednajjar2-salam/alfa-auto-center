@@ -5,7 +5,10 @@ export default function LoginPage() {
     <main className="login-page">
       <div className="login-overlay" />
       <section className="login-card glass-card">
-        <div className="brand-mark">α</div>
+        <div className="brand-mark">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/icons/icon-192.png" alt="ALFA" className="login-logo" />
+        </div>
         <div className="brand-copy">
           <h1>مركز ألفا لصيانة السيارات</h1>
           <p>ALFA AUTO CENTER</p>

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { requireActionAccess } from "@/lib/guard";
 
 function readPart(formData: FormData) {
   const sku = String(formData.get("sku") ?? "").trim();
@@ -20,6 +21,7 @@ function readPart(formData: FormData) {
 }
 
 export async function createPart(formData: FormData) {
+  await requireActionAccess("/parts");
   const data = readPart(formData);
   const existing = await prisma.part.findUnique({ where: { sku: data.sku } });
   if (existing) throw new Error("رمز القطعة مستخدم مسبقاً");
@@ -30,6 +32,7 @@ export async function createPart(formData: FormData) {
 }
 
 export async function updatePart(id: string, formData: FormData) {
+  await requireActionAccess("/parts");
   const data = readPart(formData);
   const clash = await prisma.part.findFirst({ where: { sku: data.sku, NOT: { id } } });
   if (clash) throw new Error("رمز القطعة مستخدم مسبقاً");

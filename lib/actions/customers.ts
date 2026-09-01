@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { requireActionAccess } from "@/lib/guard";
 
 function readCustomer(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim();
@@ -14,6 +15,7 @@ function readCustomer(formData: FormData) {
 }
 
 export async function createCustomer(formData: FormData) {
+  await requireActionAccess("/customers");
   const data = readCustomer(formData);
   const existing = await prisma.customer.findUnique({ where: { phone: data.phone } });
   if (existing) throw new Error("يوجد عميل بنفس رقم الهاتف");
@@ -23,6 +25,7 @@ export async function createCustomer(formData: FormData) {
 }
 
 export async function updateCustomer(id: string, formData: FormData) {
+  await requireActionAccess("/customers");
   const data = readCustomer(formData);
   const clash = await prisma.customer.findFirst({
     where: { phone: data.phone, NOT: { id } },

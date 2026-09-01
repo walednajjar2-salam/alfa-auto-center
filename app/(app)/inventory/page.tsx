@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { moneyLabel } from "@/lib/format";
+import { PLACEHOLDERS } from "@/lib/media";
 import PageHeader from "@/components/PageHeader";
 import EmptyState from "@/components/EmptyState";
+import ListThumb from "@/components/ListThumb";
 
 export default async function InventoryPage() {
   const parts = await prisma.part.findMany({
@@ -19,7 +21,8 @@ export default async function InventoryPage() {
         <div className="card-list">
           {parts.map((part) => (
             <Link key={part.id} href={`/parts/${part.id}`} className="list-card">
-              <div>
+              <ListThumb src={PLACEHOLDERS.part} alt="" />
+              <div className="list-card-body">
                 <strong>{part.name}</strong>
                 <small>
                   {part.sku} · حد التنبيه {part.minQuantity}

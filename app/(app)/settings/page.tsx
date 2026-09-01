@@ -28,10 +28,17 @@ export default async function SettingsPage() {
             <span>نسبة الضريبة %</span>
             <input name="taxPercent" type="number" step="0.01" defaultValue={settings.taxPercent} />
           </label>
+          <label className="field">
+            <span>رمز الدولة للواتساب</span>
+            <input name="countryCode" defaultValue={settings.countryCode} placeholder="962" />
+          </label>
           <button className="primary-button" type="submit">
             حفظ الإعدادات
           </button>
         </ActionForm>
+        <p className="muted" style={{ marginTop: 16 }}>
+          <a href="/backup">تنزيل نسخة احتياطية</a>
+        </p>
       </div>
     </section>
   );

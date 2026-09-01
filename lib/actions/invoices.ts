@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { lineTotal } from "@/lib/format";
 import { getSettings } from "@/lib/settings";
 import { nextInvoiceNumber } from "@/lib/numbers";
+import { requireActionAccess } from "@/lib/guard";
 
 function invoiceTotals(items: { quantity: number; unitPrice: number }[], taxRate = 0) {
   const subtotal = items.reduce((sum, item) => sum + lineTotal(item.quantity, item.unitPrice), 0);
@@ -29,6 +30,7 @@ async function refreshInvoiceStatus(invoiceId: string) {
 }
 
 export async function createInvoiceFromWorkOrder(workOrderId: string) {
+  await requireActionAccess("/invoices");
   const workOrder = await prisma.workOrder.findUniqueOrThrow({
     where: { id: workOrderId },
     include: { items: true, invoice: true },
@@ -63,6 +65,7 @@ export async function createInvoiceFromWorkOrder(workOrderId: string) {
 }
 
 export async function recordPayment(invoiceId: string, formData: FormData) {
+  await requireActionAccess("/invoices");
   const amount = Number(formData.get("amount") ?? 0);
   const method = (String(formData.get("method") ?? "CASH") as PaymentMethod) || "CASH";
   const notes = String(formData.get("notes") ?? "").trim() || null;

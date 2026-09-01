@@ -136,8 +136,26 @@ model Inspection {
   estimatedParts    Float     @default(0)
   customerApproved  Boolean?
   approvalNote      String?
+  photos            InspectionPhoto[]
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
+}
+
+enum PhotoKind {
+  BEFORE
+  AFTER
+  FINDING
+}
+
+model InspectionPhoto {
+  id            String     @id @default(cuid())
+  inspectionId  String
+  inspection    Inspection @relation(fields: [inspectionId], references: [id], onDelete: Cascade)
+  kind          PhotoKind  @default(FINDING)
+  url           String
+  caption       String?
+  isPlaceholder Boolean    @default(true)
+  createdAt     DateTime   @default(now())
 }
 
 model Invoice {
@@ -197,11 +215,12 @@ enum AppointmentStatus {
 }
 
 model WorkshopSettings {
-  id           String @id @default("default")
-  workshopName String @default("مركز ألفا لصيانة السيارات")
-  phone        String @default("")
-  address      String @default("")
-  taxPercent   Float  @default(0)
+  id           String   @id @default("default")
+  workshopName String   @default("مركز ألفا لصيانة السيارات")
+  phone        String   @default("")
+  address      String   @default("")
+  taxPercent   Float    @default(0)
+  countryCode  String   @default("962")
   updatedAt    DateTime @updatedAt
 }
 

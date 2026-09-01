@@ -5,8 +5,10 @@ import { redirect } from "next/navigation";
 import type { ItemKind, WorkOrderStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { nextWorkOrderNumber } from "@/lib/numbers";
+import { requireActionAccess } from "@/lib/guard";
 
 export async function receiveVehicle(formData: FormData) {
+  await requireActionAccess("/reception");
   let customerId = String(formData.get("customerId") ?? "").trim();
   let vehicleId = String(formData.get("vehicleId") ?? "").trim();
   const complaint = String(formData.get("complaint") ?? "").trim();
@@ -71,6 +73,7 @@ export async function receiveVehicle(formData: FormData) {
 }
 
 export async function updateWorkOrderStatus(id: string, status: WorkOrderStatus) {
+  await requireActionAccess("/work-orders");
   await prisma.workOrder.update({ where: { id }, data: { status } });
   revalidatePath("/dashboard");
   revalidatePath("/work-orders");
@@ -78,6 +81,7 @@ export async function updateWorkOrderStatus(id: string, status: WorkOrderStatus)
 }
 
 export async function addWorkOrderItem(workOrderId: string, formData: FormData) {
+  await requireActionAccess("/work-orders");
   const partId = String(formData.get("partId") ?? "").trim() || null;
   let description = String(formData.get("description") ?? "").trim();
   let kind = (String(formData.get("kind") ?? "LABOR") as ItemKind) || "LABOR";
@@ -113,6 +117,7 @@ export async function addWorkOrderItem(workOrderId: string, formData: FormData) 
 }
 
 export async function removeWorkOrderItem(workOrderId: string, itemId: string) {
+  await requireActionAccess("/work-orders");
   const item = await prisma.workOrderItem.findUniqueOrThrow({ where: { id: itemId } });
   await prisma.$transaction(async (tx) => {
     if (item.partId) {

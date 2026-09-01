@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { logoutAction } from "@/lib/actions/auth";
+import { canAccess } from "@/lib/permissions";
 
 const groups = [
   {
@@ -63,16 +64,23 @@ const groups = [
     items: [
       { href: "/appointments", label: "المواعيد" },
       { href: "/reports", label: "التقارير" },
+      { href: "/backup", label: "النسخ الاحتياطي" },
       { href: "/users", label: "المستخدمون" },
       { href: "/settings", label: "الإعدادات" },
     ],
   },
 ];
 
-type Props = { open: boolean; onClose: () => void; pathname: string };
+type Props = { open: boolean; onClose: () => void; pathname: string; role?: string };
 
-export default function MobileDrawer({ open, onClose, pathname }: Props) {
+export default function MobileDrawer({ open, onClose, pathname, role }: Props) {
   const [expanded, setExpanded] = useState<string | null>("العمل اليومي");
+  const visibleGroups = groups
+    .map((group) => ({
+      ...group,
+      items: group.items.filter((item) => canAccess(role, item.href)),
+    }))
+    .filter((group) => group.items.length > 0);
 
   return (
     <>
@@ -83,9 +91,13 @@ export default function MobileDrawer({ open, onClose, pathname }: Props) {
         {...(!open ? { inert: true } : {})}
       >
         <div className="drawer-head">
-          <div>
-            <strong>ALFA</strong>
-            <span>مركز ألفا</span>
+          <div className="header-brand">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/icons/icon-192.png" alt="" className="drawer-logo" />
+            <div>
+              <strong>ALFA</strong>
+              <span>مركز ألفا</span>
+            </div>
           </div>
           <button className="icon-button" onClick={onClose} aria-label="إغلاق">
             <X size={20} />
@@ -101,7 +113,7 @@ export default function MobileDrawer({ open, onClose, pathname }: Props) {
             <span>لوحة التحكم</span>
             <ChevronLeft size={16} />
           </Link>
-          {groups.map((group) => {
+          {visibleGroups.map((group) => {
             const Icon = group.icon;
             const isExpanded = expanded === group.title;
             return (

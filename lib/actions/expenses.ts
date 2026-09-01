@@ -4,8 +4,10 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type { PaymentMethod } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { requireActionAccess } from "@/lib/guard";
 
 export async function createExpense(formData: FormData) {
+  await requireActionAccess("/expenses");
   const title = String(formData.get("title") ?? "").trim();
   const category = String(formData.get("category") ?? "أخرى").trim() || "أخرى";
   const amount = Number(formData.get("amount") ?? 0);

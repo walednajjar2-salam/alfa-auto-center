@@ -3,9 +3,11 @@ import type { WorkOrderStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { vehicleTitle } from "@/lib/format";
 import { workOrderStatusClass, workOrderStatusLabel } from "@/lib/status";
+import { PLACEHOLDERS } from "@/lib/media";
 import PageHeader from "@/components/PageHeader";
 import EmptyState from "@/components/EmptyState";
 import StatusBadge from "@/components/StatusBadge";
+import ListThumb from "@/components/ListThumb";
 
 const filters: { value: string; label: string }[] = [
   { value: "", label: "الكل" },
@@ -67,7 +69,8 @@ export default async function WorkOrdersPage({
         <div className="card-list">
           {orders.map((order) => (
             <Link key={order.id} href={`/work-orders/${order.id}`} className="list-card">
-              <div>
+              <ListThumb src={PLACEHOLDERS.car} alt="" />
+              <div className="list-card-body">
                 <strong>{vehicleTitle(order.vehicle)}</strong>
                 <small>
                   {order.orderNumber} · {order.customer.name}

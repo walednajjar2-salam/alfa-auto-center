@@ -4,8 +4,10 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import type { AppointmentStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { requireActionAccess } from "@/lib/guard";
 
 export async function createAppointment(formData: FormData) {
+  await requireActionAccess("/appointments");
   const customerId = String(formData.get("customerId") ?? "").trim();
   const vehicleId = String(formData.get("vehicleId") ?? "").trim() || null;
   const reason = String(formData.get("reason") ?? "").trim();
@@ -29,6 +31,7 @@ export async function createAppointment(formData: FormData) {
 }
 
 export async function updateAppointmentStatus(id: string, status: AppointmentStatus) {
+  await requireActionAccess("/appointments");
   await prisma.appointment.update({ where: { id }, data: { status } });
   revalidatePath("/appointments");
   revalidatePath("/dashboard");

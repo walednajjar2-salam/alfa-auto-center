@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { requireActionAccess } from "@/lib/guard";
 
 function readVehicle(formData: FormData) {
   const customerId = String(formData.get("customerId") ?? "").trim();
@@ -22,6 +23,7 @@ function readVehicle(formData: FormData) {
 }
 
 export async function createVehicle(formData: FormData) {
+  await requireActionAccess("/vehicles");
   const data = readVehicle(formData);
   if (data.vin) {
     const existing = await prisma.vehicle.findUnique({ where: { vin: data.vin } });
@@ -34,6 +36,7 @@ export async function createVehicle(formData: FormData) {
 }
 
 export async function updateVehicle(id: string, formData: FormData) {
+  await requireActionAccess("/vehicles");
   const data = readVehicle(formData);
   if (data.vin) {
     const clash = await prisma.vehicle.findFirst({

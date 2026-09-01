@@ -15,10 +15,12 @@ export default function ActionForm({
   action,
   children,
   className,
+  encType,
 }: {
   action: (formData: FormData) => Promise<void>;
   children: ReactNode;
   className?: string;
+  encType?: string;
 }) {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -37,7 +39,7 @@ export default function ActionForm({
   }
 
   return (
-    <form action={onSubmit} className={className}>
+    <form action={onSubmit} className={className} encType={encType}>
       {error ? <p className="form-error">{error}</p> : null}
       <fieldset disabled={pending} className="bare-fieldset">
         {children}

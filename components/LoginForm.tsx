@@ -43,6 +43,9 @@ export default function LoginForm() {
       <button className="primary-button" disabled={pending} type="submit">
         <LogIn size={18} /> {pending ? "جاري الدخول..." : "تسجيل الدخول"}
       </button>
+      <p className="login-footer">
+        <a href="/forgot-password">نسيت كلمة المرور؟</a>
+      </p>
     </form>
   );
 }

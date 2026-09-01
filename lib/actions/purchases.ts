@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { lineTotal } from "@/lib/format";
 import { nextPurchaseNumber } from "@/lib/numbers";
+import { requireActionAccess } from "@/lib/guard";
 
 async function refreshPurchaseTotal(purchaseId: string) {
   const items = await prisma.purchaseItem.findMany({ where: { purchaseId } });
@@ -13,6 +14,7 @@ async function refreshPurchaseTotal(purchaseId: string) {
 }
 
 export async function createPurchase(formData: FormData) {
+  await requireActionAccess("/purchases");
   const supplierId = String(formData.get("supplierId") ?? "").trim();
   const notes = String(formData.get("notes") ?? "").trim() || null;
   if (!supplierId) throw new Error("اختر مورداً");
@@ -28,6 +30,7 @@ export async function createPurchase(formData: FormData) {
 }
 
 export async function addPurchaseItem(purchaseId: string, formData: FormData) {
+  await requireActionAccess("/purchases");
   const purchase = await prisma.purchase.findUniqueOrThrow({ where: { id: purchaseId } });
   if (purchase.status !== "DRAFT") throw new Error("لا يمكن تعديل مشترى مستلم");
   const partId = String(formData.get("partId") ?? "").trim();
@@ -41,6 +44,7 @@ export async function addPurchaseItem(purchaseId: string, formData: FormData) {
 }
 
 export async function removePurchaseItem(purchaseId: string, itemId: string) {
+  await requireActionAccess("/purchases");
   const purchase = await prisma.purchase.findUniqueOrThrow({ where: { id: purchaseId } });
   if (purchase.status !== "DRAFT") throw new Error("لا يمكن تعديل مشترى مستلم");
   await prisma.purchaseItem.delete({ where: { id: itemId } });
@@ -49,6 +53,7 @@ export async function removePurchaseItem(purchaseId: string, itemId: string) {
 }
 
 export async function receivePurchase(purchaseId: string) {
+  await requireActionAccess("/purchases");
   const purchase = await prisma.purchase.findUniqueOrThrow({
     where: { id: purchaseId },
     include: { items: true },
@@ -79,6 +84,7 @@ export async function receivePurchase(purchaseId: string) {
 }
 
 export async function cancelPurchase(purchaseId: string) {
+  await requireActionAccess("/purchases");
   const purchase = await prisma.purchase.findUniqueOrThrow({ where: { id: purchaseId } });
   if (purchase.status !== "DRAFT") throw new Error("لا يمكن إلغاء مشترى مستلم");
   await prisma.purchase.update({ where: { id: purchaseId }, data: { status: "CANCELLED" } });

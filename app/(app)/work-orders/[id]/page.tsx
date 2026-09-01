@@ -6,23 +6,30 @@ import { setInspectionApproval } from "@/lib/actions/inspections";
 import { createInvoiceFromWorkOrder } from "@/lib/actions/invoices";
 import { formatDate, lineTotal, moneyLabel, vehicleTitle } from "@/lib/format";
 import { workOrderFlow, workOrderStatusClass, workOrderStatusLabel } from "@/lib/status";
+import { PLACEHOLDERS, waLink } from "@/lib/media";
+import { getSettings } from "@/lib/settings";
 import ActionForm from "@/components/ActionForm";
 import PageHeader from "@/components/PageHeader";
 import StatusBadge from "@/components/StatusBadge";
 import StatusButton from "@/components/StatusButton";
+import WhatsAppLink from "@/components/WhatsAppLink";
+import PlaceholderPhoto from "@/components/PlaceholderPhoto";
 
 export default async function WorkOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const order = await prisma.workOrder.findUnique({
+  const [order, settings] = await Promise.all([
+    prisma.workOrder.findUnique({
     where: { id },
     include: {
       customer: true,
       vehicle: true,
       items: { orderBy: { createdAt: "asc" } },
-      inspections: { orderBy: { createdAt: "desc" } },
+      inspections: { orderBy: { createdAt: "desc" }, include: { photos: true } },
       invoice: true,
     },
-  });
+    }),
+    getSettings(),
+  ]);
   if (!order) notFound();
   const parts = await prisma.part.findMany({ orderBy: { name: "asc" } });
   const inspection = order.inspections[0];
@@ -33,6 +40,19 @@ export default async function WorkOrderDetailPage({ params }: { params: Promise<
       <PageHeader title={order.orderNumber} subtitle={vehicleTitle(order.vehicle)}>
         <StatusBadge label={workOrderStatusLabel[order.status]} className={workOrderStatusClass[order.status]} />
       </PageHeader>
+      <div className="action-row">
+        <WhatsAppLink
+          href={waLink(
+            order.customer.whatsapp || order.customer.phone,
+            order.status === "READY"
+              ? `${settings.workshopName}\nالسيارة جاهزة للتسليم\n${order.orderNumber}\n${vehicleTitle(order.vehicle)}`
+              : `${settings.workshopName}\n${order.orderNumber}\n${vehicleTitle(order.vehicle)}\nالحالة: ${workOrderStatusLabel[order.status]}`,
+            settings.countryCode,
+          )}
+          label={order.status === "READY" ? "واتساب: السيارة جاهزة" : "واتساب العميل"}
+        />
+      </div>
+      <PlaceholderPhoto src={PLACEHOLDERS.car} alt="صورة السيارة" caption="صورة عامة للسيارة حتى ترفع صور الورشة" hero />
 
       <div className="stepper">
         {workOrderFlow.map((step) => (
@@ -97,6 +117,20 @@ export default async function WorkOrderDetailPage({ params }: { params: Promise<
           <p className="muted">
             تقدير الأجور {moneyLabel(inspection.estimatedLabor)} · القطع {moneyLabel(inspection.estimatedParts)}
           </p>
+          <div className="photo-grid">
+            {(inspection.photos.length ? inspection.photos : [
+              { id: "pb", url: PLACEHOLDERS.inspectBefore, caption: "قبل", isPlaceholder: true, kind: "BEFORE" as const },
+              { id: "pa", url: PLACEHOLDERS.inspectAfter, caption: "بعد", isPlaceholder: true, kind: "AFTER" as const },
+            ]).map((photo) => (
+              <PlaceholderPhoto
+                key={photo.id}
+                src={photo.url}
+                alt={photo.kind === "AFTER" ? "بعد" : "قبل"}
+                caption={photo.caption}
+                isPlaceholder={photo.isPlaceholder}
+              />
+            ))}
+          </div>
           {inspection.customerApproved == null && order.status === "WAITING_APPROVAL" ? (
             <div className="action-row">
               <ActionForm action={setInspectionApproval.bind(null, order.id, true)}>

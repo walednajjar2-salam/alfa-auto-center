@@ -9,9 +9,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="app-shell">
-      <AppHeader userName={session.user.name} />
+      <AppHeader userName={session.user.name} role={session.user.role} />
       <div className="page-body">{children}</div>
-      <BottomNav />
+      <BottomNav role={session.user.role} />
     </div>
   );
 }

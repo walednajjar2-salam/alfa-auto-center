@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { vehicleTitle } from "@/lib/format";
+import { PLACEHOLDERS } from "@/lib/media";
 import PageHeader from "@/components/PageHeader";
 import EmptyState from "@/components/EmptyState";
+import ListThumb from "@/components/ListThumb";
 
 export default async function VehiclesPage({
   searchParams,
@@ -38,7 +40,8 @@ export default async function VehiclesPage({
         <div className="card-list">
           {vehicles.map((v) => (
             <Link key={v.id} href={`/vehicles/${v.id}`} className="list-card">
-              <div>
+              <ListThumb src={PLACEHOLDERS.car} alt="" />
+              <div className="list-card-body">
                 <strong>{vehicleTitle(v)}</strong>
                 <small>{v.customer.name}</small>
               </div>

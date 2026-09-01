@@ -10,11 +10,12 @@ export async function updateSettings(formData: FormData) {
   const phone = String(formData.get("phone") ?? "").trim();
   const address = String(formData.get("address") ?? "").trim();
   const taxPercent = Number(formData.get("taxPercent") ?? 0) || 0;
+  const countryCode = String(formData.get("countryCode") ?? "962").replace(/\D/g, "") || "962";
   if (!workshopName) throw new Error("اسم المركز مطلوب");
   await prisma.workshopSettings.upsert({
     where: { id: "default" },
-    update: { workshopName, phone, address, taxPercent },
-    create: { id: "default", workshopName, phone, address, taxPercent },
+    update: { workshopName, phone, address, taxPercent, countryCode },
+    create: { id: "default", workshopName, phone, address, taxPercent, countryCode },
   });
   revalidatePath("/settings");
   revalidatePath("/dashboard");

@@ -2,8 +2,10 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { updatePart } from "@/lib/actions/parts";
 import { moneyLabel } from "@/lib/format";
+import { PLACEHOLDERS } from "@/lib/media";
 import ActionForm from "@/components/ActionForm";
 import PageHeader from "@/components/PageHeader";
+import PlaceholderPhoto from "@/components/PlaceholderPhoto";
 
 export default async function PartDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -16,6 +18,7 @@ export default async function PartDetailPage({ params }: { params: Promise<{ id:
   return (
     <section className="dashboard-content">
       <PageHeader title={part.name} subtitle={`${part.sku} · المتاح ${part.quantity} ${part.unit}`} />
+      <PlaceholderPhoto src={PLACEHOLDERS.part} alt="قطعة غيار" caption="صورة عامة للقطعة حتى رفع صور المخزون" hero />
       {part.quantity <= part.minQuantity ? (
         <p className="form-error">المخزون تحت حد التنبيه ({part.minQuantity})</p>
       ) : null}

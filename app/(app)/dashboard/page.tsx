@@ -3,9 +3,11 @@ import { CalendarDays, CarFront, CircleDollarSign, ClipboardPlus, FileText, Sear
 import { prisma } from "@/lib/prisma";
 import { money, todayLabel, vehicleTitle } from "@/lib/format";
 import { workOrderStatusClass, workOrderStatusLabel } from "@/lib/status";
+import { PLACEHOLDERS } from "@/lib/media";
 import MetricCard from "@/components/MetricCard";
 import StatusBadge from "@/components/StatusBadge";
 import EmptyState from "@/components/EmptyState";
+import ListThumb from "@/components/ListThumb";
 
 export default async function DashboardPage() {
   const start = new Date();
@@ -116,6 +118,7 @@ export default async function DashboardPage() {
           <div className="job-list">
             {recentOrders.map((order) => (
               <Link className="job-row" key={order.id} href={`/work-orders/${order.id}`}>
+                <ListThumb src={PLACEHOLDERS.car} alt="" />
                 <div>
                   <strong>{vehicleTitle(order.vehicle)}</strong>
                   <small>{order.orderNumber}</small>

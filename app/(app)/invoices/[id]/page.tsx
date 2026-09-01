@@ -4,13 +4,17 @@ import { prisma } from "@/lib/prisma";
 import { recordPayment } from "@/lib/actions/invoices";
 import { formatDate, lineTotal, moneyLabel } from "@/lib/format";
 import { invoiceStatusClass, invoiceStatusLabel, paymentMethodLabel } from "@/lib/status";
+import { getSettings } from "@/lib/settings";
+import { waLink } from "@/lib/media";
 import ActionForm from "@/components/ActionForm";
 import PageHeader from "@/components/PageHeader";
 import StatusBadge from "@/components/StatusBadge";
+import WhatsAppLink from "@/components/WhatsAppLink";
 
 export default async function InvoiceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const invoice = await prisma.invoice.findUnique({
+  const [invoice, settings] = await Promise.all([
+    prisma.invoice.findUnique({
     where: { id },
     include: {
       customer: true,
@@ -18,7 +22,9 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
       items: true,
       payments: { orderBy: { paidAt: "desc" } },
     },
-  });
+    }),
+    getSettings(),
+  ]);
   if (!invoice) notFound();
   const paid = invoice.payments.reduce((sum, p) => sum + p.amount, 0);
   const remaining = Math.round((invoice.total - paid) * 1000) / 1000;
@@ -28,6 +34,19 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
       <PageHeader title={invoice.invoiceNumber} subtitle={invoice.customer.name}>
         <StatusBadge label={invoiceStatusLabel[invoice.status]} className={invoiceStatusClass[invoice.status]} />
       </PageHeader>
+      <div className="action-row">
+        <Link href={`/invoices/${invoice.id}/print`} className="primary-button compact-button">
+          طباعة / PDF
+        </Link>
+        <WhatsAppLink
+          href={waLink(
+            invoice.customer.whatsapp || invoice.customer.phone,
+            `${settings.workshopName}\nفاتورة ${invoice.invoiceNumber}\nالإجمالي ${moneyLabel(invoice.total)}`,
+            settings.countryCode,
+          )}
+          label="واتساب الفاتورة"
+        />
+      </div>
 
       <section className="panel">
         {invoice.workOrder ? (

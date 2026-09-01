@@ -4,9 +4,11 @@ import { prisma } from "@/lib/prisma";
 import { updateVehicle } from "@/lib/actions/vehicles";
 import { vehicleTitle } from "@/lib/format";
 import { workOrderStatusClass, workOrderStatusLabel } from "@/lib/status";
+import { PLACEHOLDERS } from "@/lib/media";
 import ActionForm from "@/components/ActionForm";
 import PageHeader from "@/components/PageHeader";
 import StatusBadge from "@/components/StatusBadge";
+import PlaceholderPhoto from "@/components/PlaceholderPhoto";
 
 export default async function VehicleDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -28,6 +30,7 @@ export default async function VehicleDetailPage({ params }: { params: Promise<{ 
         actionHref={`/reception`}
         actionLabel="استقبال"
       />
+      <PlaceholderPhoto src={PLACEHOLDERS.car} alt="صورة السيارة" caption="صورة عامة حتى رفع صور الورشة" hero />
       <div className="panel">
         <ActionForm action={updateVehicle.bind(null, vehicle.id)} className="stack-form">
           <label className="field">

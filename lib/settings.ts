@@ -10,6 +10,7 @@ export async function getSettings() {
       phone: "",
       address: "",
       taxPercent: 0,
+      countryCode: "962",
     },
   });
 }

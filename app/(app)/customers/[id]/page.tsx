@@ -4,25 +4,42 @@ import { prisma } from "@/lib/prisma";
 import { updateCustomer } from "@/lib/actions/customers";
 import { vehicleTitle } from "@/lib/format";
 import { workOrderStatusClass, workOrderStatusLabel } from "@/lib/status";
+import { PLACEHOLDERS, waLink } from "@/lib/media";
+import { getSettings } from "@/lib/settings";
 import ActionForm from "@/components/ActionForm";
 import PageHeader from "@/components/PageHeader";
 import StatusBadge from "@/components/StatusBadge";
 import EmptyState from "@/components/EmptyState";
+import ListThumb from "@/components/ListThumb";
+import WhatsAppLink from "@/components/WhatsAppLink";
 
 export default async function CustomerDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const customer = await prisma.customer.findUnique({
-    where: { id },
-    include: {
-      vehicles: { orderBy: { createdAt: "desc" } },
-      workOrders: { take: 8, orderBy: { createdAt: "desc" }, include: { vehicle: true } },
-    },
-  });
+  const [customer, settings] = await Promise.all([
+    prisma.customer.findUnique({
+      where: { id },
+      include: {
+        vehicles: { orderBy: { createdAt: "desc" } },
+        workOrders: { take: 8, orderBy: { createdAt: "desc" }, include: { vehicle: true } },
+      },
+    }),
+    getSettings(),
+  ]);
   if (!customer) notFound();
 
   return (
     <section className="dashboard-content">
       <PageHeader title={customer.name} subtitle={customer.phone} actionHref="/reception" actionLabel="استقبال" />
+      <div className="action-row">
+        <WhatsAppLink
+          href={waLink(
+            customer.whatsapp || customer.phone,
+            `${settings.workshopName}\nمرحباً ${customer.name}`,
+            settings.countryCode,
+          )}
+          label="واتساب العميل"
+        />
+      </div>
       <div className="panel">
         <h2 className="section-title">بيانات العميل</h2>
         <ActionForm action={updateCustomer.bind(null, customer.id)} className="stack-form">
@@ -59,7 +76,8 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
           <div className="card-list">
             {customer.vehicles.map((v) => (
               <Link key={v.id} href={`/vehicles/${v.id}`} className="list-card">
-                <div>
+                <ListThumb src={PLACEHOLDERS.car} alt="" />
+                <div className="list-card-body">
                   <strong>{vehicleTitle(v)}</strong>
                   <small>{v.color ?? "بدون لون"}</small>
                 </div>

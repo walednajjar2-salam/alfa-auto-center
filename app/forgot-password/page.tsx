@@ -1,6 +1,8 @@
 import { getSettings } from "@/lib/settings";
 import { waLink } from "@/lib/media";
 
+export const dynamic = "force-dynamic";
+
 export default async function ForgotPasswordPage() {
   const settings = await getSettings();
   const href = waLink(

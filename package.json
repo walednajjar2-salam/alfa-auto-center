@@ -2,7 +2,34 @@
   "name": "alfa-auto-center",
   "version": "0.1.0",
   "private": true,
-  "scripts": {"dev":"next dev","build":"next build","start":"next start","lint":"next lint","postinstall":"prisma generate"},
-  "dependencies": {"@prisma/client":"^6.14.0","bcryptjs":"^3.0.2","lucide-react":"^0.468.0","next":"^15.5.0","next-auth":"^5.0.0-beta.29","react":"^19.1.0","react-dom":"^19.1.0"},
-  "devDependencies": {"@types/node":"^22.10.0","@types/react":"^19.0.0","@types/react-dom":"^19.0.0","prisma":"^6.14.0","typescript":"^5.7.0"}
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "postinstall": "prisma generate",
+    "db:push": "prisma db push",
+    "db:seed": "tsx prisma/seed.ts",
+    "test": "tsx --test lib/permissions.test.ts"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.14.0",
+    "bcryptjs": "^3.0.2",
+    "lucide-react": "^0.468.0",
+    "next": "^15.5.0",
+    "next-auth": "^5.0.0-beta.29",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "prisma": "^6.14.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.7.0"
+  }
 }

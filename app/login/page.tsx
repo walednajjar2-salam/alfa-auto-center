@@ -1,5 +1,26 @@
-"use client";
-import { Eye, EyeOff, LockKeyhole, LogIn, UserRound } from "lucide-react";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-export default function LoginPage(){const [showPassword,setShowPassword]=useState(false);const [loading,setLoading]=useState(false);const router=useRouter();function handleSubmit(e:React.FormEvent){e.preventDefault();setLoading(true);setTimeout(()=>router.push("/dashboard"),350);}return <main className="login-page"><div className="login-overlay"/><section className="login-card glass-card"><div className="brand-mark">α</div><div className="brand-copy"><h1>مركز ألفا لصيانة السيارات</h1><p>ALFA AUTO CENTER</p><small>خبرة منذ 2006</small></div><div className="welcome-block"><h2>مرحباً بك</h2><p>سجّل الدخول لإدارة أعمال المركز</p></div><form onSubmit={handleSubmit} className="login-form"><label><span>اسم المستخدم</span><div className="input-shell"><UserRound size={18}/><input name="username" placeholder="أدخل اسم المستخدم" autoComplete="username" required/></div></label><label><span>كلمة المرور</span><div className="input-shell"><LockKeyhole size={18}/><input name="password" type={showPassword?"text":"password"} placeholder="أدخل كلمة المرور" autoComplete="current-password" required/><button type="button" className="icon-button" onClick={()=>setShowPassword(v=>!v)} aria-label="إظهار أو إخفاء كلمة المرور">{showPassword?<EyeOff size={18}/>:<Eye size={18}/>}</button></div></label><div className="login-options"><label className="remember"><input type="checkbox"/> تذكرني</label><button type="button" className="text-button">نسيت كلمة المرور؟</button></div><button className="primary-button" disabled={loading} type="submit"><LogIn size={18}/> {loading?"جاري الدخول...":"تسجيل الدخول"}</button></form><p className="login-footer">© 2026 مركز ألفا لصيانة السيارات</p></section></main>}
+import LoginForm from "@/components/LoginForm";
+
+export default function LoginPage() {
+  return (
+    <main className="login-page">
+      <div className="login-overlay" />
+      <section className="login-card glass-card">
+        <div className="brand-mark">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/icons/icon-192.png" alt="ALFA" className="login-logo" />
+        </div>
+        <div className="brand-copy">
+          <h1>مركز ألفا لصيانة السيارات</h1>
+          <p>ALFA AUTO CENTER</p>
+          <small>خبرة منذ 2006</small>
+        </div>
+        <div className="welcome-block">
+          <h2>مرحباً بك</h2>
+          <p>سجّل الدخول لإدارة أعمال المركز</p>
+        </div>
+        <LoginForm />
+        <p className="login-footer">© 2026 مركز ألفا لصيانة السيارات</p>
+      </section>
+    </main>
+  );
+}

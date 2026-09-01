@@ -1,26 +1,45 @@
-# ALFA Auto Center
+# مركز ألفا لصيانة السيارات
 
-Mobile-first Arabic management system for مركز ألفا لصيانة السيارات.
+نظام إدارة عربي للجوال: استقبال، فحص، صيانة، فواتير، مخزون، وصندوق.
 
-## Stack
-- Next.js 15 + TypeScript
-- Prisma + PostgreSQL
-- NextAuth/Auth.js ready
-- Mobile-first RTL UI
-- Railway-ready
+## الدخول
+- المستخدم: `admin`
+- كلمة المرور الافتراضية: `Alfa@2026` — غيّرها بعد أول دخول.
+- استعادة كلمة المرور: من `/forgot-password` تطلب من المدير تعيين كلمة جديدة.
 
-## Current phase
-- Login screen
-- Mobile dashboard
-- Expandable mobile navigation drawer
-- Initial Prisma schema for users, customers, vehicles, work orders
+## الصور المؤقتة
+حتى رفع صور الورشة الحقيقية يستخدم النظام صوراً عامة في:
+- خلفية تسجيل الدخول
+- أيقونات PWA
+- السيارات وأوامر العمل
+- صور الفحص (قبل / بعد)
+- قطع الغيار
+
+ارفع صور الفحص من شاشة الأمر؛ إن لم ترفع شيئاً تُحفظ الصور العامة تلقائياً.
+
+## الوحدات
+- صلاحيات حسب الدور (مدير / استقبال / فني / مخزن / محاسبة)
+- لوحة تحكم وتنبيهات (مواعيد، نواقص مخزون)
+- العملاء، السيارات، الزيارات، المواعيد
+- استقبال → فحص → موافقة → صيانة → جاهز → تسليم
+- واتساب للعميل (الحالة / الجاهزية / الفاتورة)
+- طباعة الفاتورة أو حفظها PDF من المتصفح
+- مخزون: قطع، موردون، مشتريات
+- فواتير، دفعات، مصاريف، صندوق، تقارير
+- نسخة احتياطية JSON للمدير من `/backup`
+
+## التشغيل المحلي
+```bash
+cp .env.example .env
+npx prisma db push
+SEED_DEMO=true npx prisma db seed
+npm run dev
+```
 
 ## Railway
-1. Create PostgreSQL service in Railway.
-2. Add `DATABASE_URL` and `AUTH_SECRET` environment variables.
-3. Deploy this GitHub repository as a Railway service.
-4. Build command: `npm run build`
-5. Start command: `npm run start`
+1. اربط PostgreSQL ليُحقن `DATABASE_URL`.
+2. عيّن `AUTH_SECRET` و`AUTH_TRUST_HOST=true` و`AUTH_URL` و`ADMIN_PASSWORD`.
+3. اختياري: `SEED_DEMO=true` ثم نفّذ البذرة مرة واحدة.
+4. البناء: `npm run build` — التشغيل: `npm run start`
 
-## Next phase
-Authentication, customer CRUD, vehicle CRUD, vehicle reception, work order flow, inspection, invoice and payments.
+GitHub Pages يعرض صفحة تعريف فقط؛ التطبيق يعمل على Railway.

@@ -1,249 +1,51 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alfa Auto Center - مركز ألفا للسيارات</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-        }
-        
-        header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 60px 20px;
-            text-align: center;
-        }
-        
-        header h1 {
-            font-size: 3em;
-            margin-bottom: 10px;
-        }
-        
-        header p {
-            font-size: 1.2em;
-            opacity: 0.9;
-        }
-        
-        nav {
-            background-color: #333;
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        nav ul {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        nav a {
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            display: block;
-            transition: background-color 0.3s;
-        }
-        
-        nav a:hover {
-            background-color: #667eea;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-        
-        .section {
-            margin-bottom: 60px;
-        }
-        
-        .section h2 {
-            color: #667eea;
-            margin-bottom: 20px;
-            font-size: 2em;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 10px;
-        }
-        
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-        
-        .feature-card {
-            background: #f4f4f4;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-        }
-        
-        .feature-card h3 {
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-        
-        .btn {
-            display: inline-block;
-            background-color: #667eea;
-            color: white;
-            padding: 12px 30px;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-            border: none;
-            cursor: pointer;
-            font-size: 1em;
-        }
-        
-        .btn:hover {
-            background-color: #764ba2;
-        }
-        
-        footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 30px 20px;
-            margin-top: 60px;
-        }
-        
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 20px 0;
-        }
-        
-        .stat-box {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .stat-box h4 {
-            color: #667eea;
-            font-size: 2em;
-            margin-bottom: 5px;
-        }
-        
-        .stat-box p {
-            color: #666;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مركز ألفا لصيانة السيارات</title>
+  <link rel="icon" href="icon.png">
+  <style>
+    :root { --gold:#b98a2f; --navy:#0b1f33; --text:#121722; --muted:#5c6570; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Tahoma, Arial, sans-serif; background: #f6f5f2; color: var(--text); }
+    header { background: linear-gradient(160deg, #0b1f33, #16324a); color: #fff; padding: 56px 20px 48px; text-align: center; }
+    header img { width: 88px; height: 88px; border-radius: 20px; object-fit: cover; border: 1px solid rgba(185,138,47,.5); }
+    header h1 { margin: 14px 0 6px; font-size: 28px; }
+    header p { margin: 0; color: #e7bf6b; letter-spacing: 2px; }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 32px 18px 60px; }
+    .cta { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 22px 0 0; }
+    a.btn { display: inline-block; background: linear-gradient(135deg, #a77620, #d8ac53); color: #17130d; text-decoration: none; padding: 12px 22px; border-radius: 14px; font-weight: 700; }
+    a.ghost { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,.28); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+    .card { background: #fff; border: 1px solid #ece9e2; border-radius: 16px; padding: 18px; }
+    h2 { color: var(--navy); }
+    footer { text-align: center; padding: 24px; color: var(--muted); }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>🚗 Alfa Auto Center</h1>
-        <p>مركز ألفا المتميز للخدمات السيارات</p>
-    </header>
-    
-    <nav>
-        <ul>
-            <li><a href="#about">عن المركز</a></li>
-            <li><a href="#services">الخدمات</a></li>
-            <li><a href="#features">المميزات</a></li>
-            <li><a href="#contact">التواصل</a></li>
-            <li><a href="https://github.com/walednajjar2-salam/alfa-auto-center" target="_blank">GitHub</a></li>
-        </ul>
-    </nav>
-    
-    <div class="container">
-        <section id="about" class="section">
-            <h2>عن مركز ألفا للسيارات</h2>
-            <p>مرحباً بك في مركز ألفا للسيارات، حيث نقدم خدمات متميزة وموثوقة لصيانة وإصلاح جميع أنواع السيارات.</p>
-            <p style="margin-top: 15px;">نحن نتمتع بفريق متخصص وخبرة طويلة في المجال، مما يضمن لك أفضل جودة وأسعار منافسة.</p>
-        </section>
-        
-        <section id="services" class="section">
-            <h2>خدماتنا</h2>
-            <div class="features">
-                <div class="feature-card">
-                    <h3>🔧 الصيانة الدورية</h3>
-                    <p>صيانة شاملة لسيارتك بأفضل المعدات الحديثة</p>
-                </div>
-                <div class="feature-card">
-                    <h3>⚙️ إصلاح المحرك</h3>
-                    <p>خدمات متخصصة في إصلاح وتصليح المحركات</p>
-                </div>
-                <div class="feature-card">
-                    <h3>🛞 خدمات الإطارات</h3>
-                    <p>تغيير وإصلاح وموازنة الإطارات المختلفة</p>
-                </div>
-                <div class="feature-card">
-                    <h3>🔋 نظام الكهرباء</h3>
-                    <p>إصلاح وصيانة جميع أنظمة الكهرباء في السيارة</p>
-                </div>
-                <div class="feature-card">
-                    <h3>🎨 الصيانة التجميلية</h3>
-                    <p>خدمات الطلاء والتلميع والتنظيف المتقدم</p>
-                </div>
-                <div class="feature-card">
-                    <h3>📱 الخدمات الإضافية</h3>
-                    <p>خدمات إضافية متنوعة لراحتك</p>
-                </div>
-            </div>
-        </section>
-        
-        <section id="features" class="section">
-            <h2>مميزاتنا</h2>
-            <div class="stats">
-                <div class="stat-box">
-                    <h4>15+</h4>
-                    <p>سنة خبرة</p>
-                </div>
-                <div class="stat-box">
-                    <h4>1000+</h4>
-                    <p>عميل راضي</p>
-                </div>
-                <div class="stat-box">
-                    <h4>100%</h4>
-                    <p>ضمان الجودة</p>
-                </div>
-                <div class="stat-box">
-                    <h4>24/7</h4>
-                    <p>خدمة طوارئ</p>
-                </div>
-            </div>
-        </section>
-        
-        <section id="contact" class="section">
-            <h2>تواصل معنا</h2>
-            <p>نحن هنا لخدمتك دائماً!</p>
-            <div style="margin-top: 20px;">
-                <p><strong>📞 الهاتف:</strong> +966 XX XXX XXXX</p>
-                <p><strong>📧 البريد الإلكتروني:</strong> info@alfaauto.com</p>
-                <p><strong>📍 العنوان:</strong> الرياض، المملكة العربية السعودية</p>
-            </div>
-            <a href="https://github.com/walednajjar2-salam/alfa-auto-center" class="btn" style="margin-top: 20px;">زيارة المستودع على GitHub</a>
-        </section>
+  <header>
+    <img src="icon.png" alt="مركز ألفا">
+    <h1>مركز ألفا لصيانة السيارات</h1>
+    <p>ALFA AUTO CENTER</p>
+    <div class="cta">
+      <a class="btn" href="https://github.com/walednajjar2-salam/alfa-auto-center">المستودع</a>
+      <a class="btn ghost" href="https://github.com/walednajjar2-salam/alfa-auto-center#readme">دليل التشغيل</a>
     </div>
-    
-    <footer>
-        <p>&copy; 2026 Alfa Auto Center. جميع الحقوق محفوظة.</p>
-        <p>تم الإنشاء بواسطة <a href="https://github.com/walednajjar2-salam" style="color: #667eea; text-decoration: none;">walednajjar2-salam</a></p>
-    </footer>
+  </header>
+  <div class="wrap">
+    <section>
+      <h2>نظام تشغيل الورشة</h2>
+      <p>تطبيق عربي للجوال لإدارة الاستقبال، الفحص، الصيانة، الفواتير، المخزون، والصندوق. صور السيارات والقطع المعروضة حالياً عامة مؤقتة إلى أن تُرفع صور الورشة.</p>
+    </section>
+    <div class="grid">
+      <div class="card"><h3>الاستقبال والفحص</h3><p>أوامر عمل، صور قبل/بعد، موافقة العميل، وواتساب الجاهزية.</p></div>
+      <div class="card"><h3>المخزون</h3><p>قطع، موردون، مشتريات، وتنبيه النواقص.</p></div>
+      <div class="card"><h3>الحسابات</h3><p>فواتير قابلة للطباعة، دفعات، مصاريف، وصندوق.</p></div>
+      <div class="card"><h3>الصلاحيات</h3><p>مدير، استقبال، فني، مخزن، ومحاسبة.</p></div>
+    </div>
+    <p style="margin-top:28px;color:var(--muted)">دخول الموظفين يتم من عنوان Railway بعد النشر، وليس من صفحة GitHub هذه.</p>
+  </div>
+  <footer>© 2026 مركز ألفا لصيانة السيارات</footer>
 </body>
 </html>

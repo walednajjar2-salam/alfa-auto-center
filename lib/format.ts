@@ -25,6 +25,20 @@ export function formatDate(value: Date | string) {
   }).format(new Date(value));
 }
 
+export function formatDateTime(value: Date | string) {
+  return new Intl.DateTimeFormat("ar-JO", {
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(value));
+}
+
+export function toDateTimeLocal(value: Date) {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${value.getFullYear()}-${pad(value.getMonth() + 1)}-${pad(value.getDate())}T${pad(value.getHours())}:${pad(value.getMinutes())}`;
+}
+
 export function vehicleTitle(vehicle: { make: string; model: string; year: number | null; plateNumber: string }) {
   const year = vehicle.year ? ` ${vehicle.year}` : "";
   return `${vehicle.make} ${vehicle.model}${year} · ${vehicle.plateNumber}`;

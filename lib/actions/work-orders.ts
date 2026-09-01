@@ -78,18 +78,52 @@ export async function updateWorkOrderStatus(id: string, status: WorkOrderStatus)
 }
 
 export async function addWorkOrderItem(workOrderId: string, formData: FormData) {
-  const description = String(formData.get("description") ?? "").trim();
-  const kind = (String(formData.get("kind") ?? "LABOR") as ItemKind) || "LABOR";
+  const partId = String(formData.get("partId") ?? "").trim() || null;
+  let description = String(formData.get("description") ?? "").trim();
+  let kind = (String(formData.get("kind") ?? "LABOR") as ItemKind) || "LABOR";
   const quantity = Number(formData.get("quantity") ?? 1) || 1;
-  const unitPrice = Number(formData.get("unitPrice") ?? 0) || 0;
-  if (!description) throw new Error("أدخل وصف البند");
-  await prisma.workOrderItem.create({
-    data: { workOrderId, kind, description, quantity, unitPrice },
-  });
+  let unitPrice = Number(formData.get("unitPrice") ?? 0) || 0;
+
+  if (partId) {
+    const part = await prisma.part.findUniqueOrThrow({ where: { id: partId } });
+    if (part.quantity < quantity) {
+      throw new Error(`الكمية المتاحة من ${part.name} هي ${part.quantity} فقط`);
+    }
+    kind = "PART";
+    description = description || part.name;
+    if (!unitPrice) unitPrice = part.salePrice;
+    await prisma.$transaction([
+      prisma.workOrderItem.create({
+        data: { workOrderId, partId, kind, description, quantity, unitPrice },
+      }),
+      prisma.part.update({
+        where: { id: partId },
+        data: { quantity: { decrement: quantity } },
+      }),
+    ]);
+  } else {
+    if (!description) throw new Error("أدخل وصف البند");
+    await prisma.workOrderItem.create({
+      data: { workOrderId, kind, description, quantity, unitPrice },
+    });
+  }
   revalidatePath(`/work-orders/${workOrderId}`);
+  revalidatePath("/inventory");
+  revalidatePath("/parts");
 }
 
 export async function removeWorkOrderItem(workOrderId: string, itemId: string) {
-  await prisma.workOrderItem.delete({ where: { id: itemId } });
+  const item = await prisma.workOrderItem.findUniqueOrThrow({ where: { id: itemId } });
+  await prisma.$transaction(async (tx) => {
+    if (item.partId) {
+      await tx.part.update({
+        where: { id: item.partId },
+        data: { quantity: { increment: item.quantity } },
+      });
+    }
+    await tx.workOrderItem.delete({ where: { id: itemId } });
+  });
   revalidatePath(`/work-orders/${workOrderId}`);
+  revalidatePath("/inventory");
+  revalidatePath("/parts");
 }

@@ -25,6 +25,7 @@ const groups = [
       { href: "/reception", label: "استقبال سيارة" },
       { href: "/work-orders", label: "أوامر العمل" },
       { href: "/work-orders?status=INSPECTION", label: "الفحص والتشخيص" },
+      { href: "/service", label: "الصيانة والإصلاح" },
     ],
   },
   {
@@ -33,6 +34,17 @@ const groups = [
     items: [
       { href: "/customers", label: "العملاء" },
       { href: "/vehicles", label: "السيارات" },
+      { href: "/visits", label: "سجل الزيارات" },
+    ],
+  },
+  {
+    title: "المخزون",
+    icon: Package,
+    items: [
+      { href: "/parts", label: "قطع الغيار" },
+      { href: "/inventory", label: "المخزون" },
+      { href: "/suppliers", label: "الموردون" },
+      { href: "/purchases", label: "المشتريات" },
     ],
   },
   {
@@ -41,6 +53,18 @@ const groups = [
     items: [
       { href: "/invoices", label: "الفواتير" },
       { href: "/payments", label: "المدفوعات" },
+      { href: "/expenses", label: "المصاريف" },
+      { href: "/cash", label: "الصندوق" },
+    ],
+  },
+  {
+    title: "الإدارة",
+    icon: Settings,
+    items: [
+      { href: "/appointments", label: "المواعيد" },
+      { href: "/reports", label: "التقارير" },
+      { href: "/users", label: "المستخدمون" },
+      { href: "/settings", label: "الإعدادات" },
     ],
   },
 ];
@@ -101,16 +125,6 @@ export default function MobileDrawer({ open, onClose, pathname }: Props) {
               </div>
             );
           })}
-          <div className="drawer-main" style={{ opacity: 0.45 }}>
-            <Package size={18} />
-            <span>المخزون</span>
-            <span />
-          </div>
-          <div className="drawer-main" style={{ opacity: 0.45 }}>
-            <Settings size={18} />
-            <span>الإعدادات</span>
-            <span />
-          </div>
         </nav>
         <form action={logoutAction} className="drawer-logout">
           <button type="submit">

@@ -11,7 +11,7 @@ export default async function DashboardPage() {
   const start = new Date();
   start.setHours(0, 0, 0, 0);
 
-  const [inShop, ready, todayOrders, todayPayments, recentOrders] = await Promise.all([
+  const [inShop, ready, todayOrders, todayPayments, todayAppointments, lowStock, recentOrders] = await Promise.all([
     prisma.workOrder.count({
       where: { status: { in: ["RECEIVED", "INSPECTION", "WAITING_APPROVAL", "IN_SERVICE"] } },
     }),
@@ -21,6 +21,10 @@ export default async function DashboardPage() {
       _sum: { amount: true },
       where: { paidAt: { gte: start } },
     }),
+    prisma.appointment.count({
+      where: { scheduledAt: { gte: start }, status: { in: ["SCHEDULED", "CONFIRMED"] } },
+    }),
+    prisma.part.findMany({ orderBy: { quantity: "asc" }, take: 20 }),
     prisma.workOrder.findMany({
       take: 6,
       orderBy: { createdAt: "desc" },
@@ -29,6 +33,7 @@ export default async function DashboardPage() {
   ]);
 
   const revenue = todayPayments._sum.amount ?? 0;
+  const low = lowStock.filter((p) => p.quantity <= p.minQuantity);
 
   return (
     <section className="dashboard-content">
@@ -55,6 +60,26 @@ export default async function DashboardPage() {
         <MetricCard label="أوامر اليوم" value={String(todayOrders)} unit="أمر" icon={CalendarDays} tone="violet" />
         <MetricCard label="جاهزة للتسليم" value={String(ready)} unit="سيارات" icon={ShieldCheck} tone="green" />
       </section>
+
+      {todayAppointments > 0 || low.length > 0 ? (
+        <section className="panel">
+          <div className="panel-title">
+            <h2>تنبيهات اليوم</h2>
+          </div>
+          {todayAppointments > 0 ? (
+            <Link href="/appointments" className="job-row">
+              <strong>مواعيد اليوم</strong>
+              <span>{todayAppointments}</span>
+            </Link>
+          ) : null}
+          {low.length > 0 ? (
+            <Link href="/inventory" className="job-row">
+              <strong>نواقص مخزون</strong>
+              <span className="form-error">{low.length} قطعة</span>
+            </Link>
+          ) : null}
+        </section>
+      ) : null}
 
       <section className="panel quick-panel">
         <div className="panel-title">

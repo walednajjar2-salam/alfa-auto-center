@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import type { PaymentMethod } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { lineTotal } from "@/lib/format";
+import { getSettings } from "@/lib/settings";
 import { nextInvoiceNumber } from "@/lib/numbers";
 
 function invoiceTotals(items: { quantity: number; unitPrice: number }[], taxRate = 0) {
@@ -35,7 +36,8 @@ export async function createInvoiceFromWorkOrder(workOrderId: string) {
   if (workOrder.invoice) redirect(`/invoices/${workOrder.invoice.id}`);
   if (workOrder.items.length === 0) throw new Error("أضف بنود عمل أو قطع قبل إصدار الفاتورة");
 
-  const totals = invoiceTotals(workOrder.items);
+  const settings = await getSettings();
+  const totals = invoiceTotals(workOrder.items, settings.taxPercent / 100);
   const invoice = await prisma.invoice.create({
     data: {
       invoiceNumber: await nextInvoiceNumber(),
@@ -84,5 +86,7 @@ export async function recordPayment(invoiceId: string, formData: FormData) {
   revalidatePath("/invoices");
   revalidatePath("/payments");
   revalidatePath("/dashboard");
+  revalidatePath("/cash");
+  revalidatePath("/reports");
   revalidatePath(`/invoices/${invoiceId}`);
 }

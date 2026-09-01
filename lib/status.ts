@@ -1,4 +1,11 @@
-import type { InvoiceStatus, PaymentMethod, WorkOrderStatus } from "@prisma/client";
+import type {
+  AppointmentStatus,
+  InvoiceStatus,
+  PaymentMethod,
+  PurchaseStatus,
+  UserRole,
+  WorkOrderStatus,
+} from "@prisma/client";
 
 export const workOrderStatusLabel: Record<WorkOrderStatus, string> = {
   RECEIVED: "مستلمة",
@@ -51,3 +58,41 @@ export const workOrderFlow: WorkOrderStatus[] = [
   "READY",
   "DELIVERED",
 ];
+
+export const purchaseStatusLabel: Record<PurchaseStatus, string> = {
+  DRAFT: "مسودة",
+  RECEIVED: "مستلمة",
+  CANCELLED: "ملغاة",
+};
+
+export const purchaseStatusClass: Record<PurchaseStatus, string> = {
+  DRAFT: "status-muted",
+  RECEIVED: "status-green",
+  CANCELLED: "status-red",
+};
+
+export const appointmentStatusLabel: Record<AppointmentStatus, string> = {
+  SCHEDULED: "مجدولة",
+  CONFIRMED: "مؤكدة",
+  DONE: "منجزة",
+  CANCELLED: "ملغاة",
+  NO_SHOW: "لم يحضر",
+};
+
+export const appointmentStatusClass: Record<AppointmentStatus, string> = {
+  SCHEDULED: "status-blue",
+  CONFIRMED: "status-gold",
+  DONE: "status-green",
+  CANCELLED: "status-red",
+  NO_SHOW: "status-muted",
+};
+
+export const roleLabel: Record<UserRole, string> = {
+  ADMIN: "مدير",
+  RECEPTION: "استقبال",
+  ACCOUNTING: "حسابات",
+  TECHNICIAN: "فني",
+  STORE: "مخزن",
+};
+
+export const expenseCategories = ["إيجار", "رواتب", "كهرباء وماء", "مستهلكات", "صيانة معدات", "أخرى"];

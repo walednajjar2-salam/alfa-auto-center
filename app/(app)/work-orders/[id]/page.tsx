@@ -24,6 +24,7 @@ export default async function WorkOrderDetailPage({ params }: { params: Promise<
     },
   });
   if (!order) notFound();
+  const parts = await prisma.part.findMany({ orderBy: { name: "asc" } });
   const inspection = order.inspections[0];
   const itemsTotal = order.items.reduce((sum, item) => sum + lineTotal(item.quantity, item.unitPrice), 0);
 
@@ -161,8 +162,19 @@ export default async function WorkOrderDetailPage({ params }: { params: Promise<
               </label>
             </div>
             <label className="field">
+              <span>من المخزون</span>
+              <select name="partId" defaultValue="">
+                <option value="">بند يدوي</option>
+                {parts.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name} · المتاح {p.quantity} · {p.salePrice}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="field">
               <span>الوصف</span>
-              <input name="description" required placeholder="تغيير زيت، فلتر هواء..." />
+              <input name="description" placeholder="تغيير زيت، أو اتركه إن اخترت قطعة" />
             </label>
             <button className="ghost-button" type="submit">
               إضافة بند

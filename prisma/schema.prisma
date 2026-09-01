@@ -65,6 +65,7 @@ model Customer {
   vehicles   Vehicle[]
   workOrders WorkOrder[]
   invoices   Invoice[]
+  appointments Appointment[]
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
 }
@@ -81,6 +82,7 @@ model Vehicle {
   color       String?
   mileage     Int?
   workOrders  WorkOrder[]
+  appointments Appointment[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
@@ -114,6 +116,8 @@ model WorkOrderItem {
   id          String    @id @default(cuid())
   workOrderId String
   workOrder   WorkOrder @relation(fields: [workOrderId], references: [id], onDelete: Cascade)
+  partId      String?
+  part        Part?     @relation(fields: [partId], references: [id])
   kind        ItemKind  @default(LABOR)
   description String
   quantity    Float     @default(1)
@@ -176,4 +180,109 @@ model Payment {
   notes     String?
   paidAt    DateTime      @default(now())
   createdAt DateTime      @default(now())
+}
+
+enum PurchaseStatus {
+  DRAFT
+  RECEIVED
+  CANCELLED
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  CONFIRMED
+  DONE
+  CANCELLED
+  NO_SHOW
+}
+
+model WorkshopSettings {
+  id           String @id @default("default")
+  workshopName String @default("مركز ألفا لصيانة السيارات")
+  phone        String @default("")
+  address      String @default("")
+  taxPercent   Float  @default(0)
+  updatedAt    DateTime @updatedAt
+}
+
+model Supplier {
+  id        String     @id @default(cuid())
+  name      String
+  phone     String     @unique
+  notes     String?
+  parts     Part[]
+  purchases Purchase[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Part {
+  id             String         @id @default(cuid())
+  sku            String         @unique
+  name           String
+  brand          String?
+  category       String?
+  unit           String         @default("قطعة")
+  costPrice      Float          @default(0)
+  salePrice      Float          @default(0)
+  quantity       Float          @default(0)
+  minQuantity    Float          @default(2)
+  supplierId     String?
+  supplier       Supplier?      @relation(fields: [supplierId], references: [id])
+  purchaseItems  PurchaseItem[]
+  workOrderItems WorkOrderItem[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model Purchase {
+  id          String         @id @default(cuid())
+  number      String         @unique
+  supplierId  String
+  supplier    Supplier       @relation(fields: [supplierId], references: [id])
+  status      PurchaseStatus @default(DRAFT)
+  total       Float          @default(0)
+  notes       String?
+  receivedAt  DateTime?
+  items       PurchaseItem[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model PurchaseItem {
+  id          String   @id @default(cuid())
+  purchaseId  String
+  purchase    Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  partId      String
+  part        Part     @relation(fields: [partId], references: [id])
+  quantity    Float
+  unitCost    Float
+}
+
+model Expense {
+  id        String        @id @default(cuid())
+  title     String
+  category  String
+  amount    Float
+  method    PaymentMethod @default(CASH)
+  notes     String?
+  spentAt   DateTime      @default(now())
+  createdAt DateTime      @default(now())
+}
+
+model Appointment {
+  id          String            @id @default(cuid())
+  customerId  String
+  customer    Customer          @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  vehicleId   String?
+  vehicle     Vehicle?          @relation(fields: [vehicleId], references: [id])
+  scheduledAt DateTime
+  status      AppointmentStatus @default(SCHEDULED)
+  reason      String
+  notes       String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@index([scheduledAt])
+  @@index([status])
 }

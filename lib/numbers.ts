@@ -23,3 +23,15 @@ export async function nextInvoiceNumber() {
   const n = last ? Number(last.invoiceNumber.slice(-5)) + 1 : 1;
   return `${prefix}${String(n).padStart(5, "0")}`;
 }
+
+export async function nextPurchaseNumber() {
+  const year = new Date().getFullYear();
+  const prefix = `PO-${year}-`;
+  const last = await prisma.purchase.findFirst({
+    where: { number: { startsWith: prefix } },
+    orderBy: { number: "desc" },
+    select: { number: true },
+  });
+  const n = last ? Number(last.number.slice(-5)) + 1 : 1;
+  return `${prefix}${String(n).padStart(5, "0")}`;
+}

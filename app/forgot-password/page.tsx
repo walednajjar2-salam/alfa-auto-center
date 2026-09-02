@@ -1,10 +1,10 @@
-import { getSettings } from "@/lib/settings";
+import { getPublicSettings } from "@/lib/settings";
 import { waLink } from "@/lib/media";
 
 export const dynamic = "force-dynamic";
 
 export default async function ForgotPasswordPage() {
-  const settings = await getSettings();
+  const { settings, databaseReady } = await getPublicSettings();
   const href = waLink(
     settings.phone,
     `طلب إعادة تعيين كلمة مرور نظام ألفا — ${settings.workshopName}`,
@@ -31,6 +31,8 @@ export default async function ForgotPasswordPage() {
           <a className="primary-button" href={href} target="_blank" rel="noreferrer">
             واتساب الإدارة
           </a>
+        ) : !databaseReady ? (
+          <p className="login-footer">قاعدة البيانات غير جاهزة حالياً. اربط PostgreSQL على Railway ثم أعد المحاولة.</p>
         ) : (
           <p className="login-footer">أضف هاتف المركز من الإعدادات ليظهر رابط واتساب.</p>
         )}

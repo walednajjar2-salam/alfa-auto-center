@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { canAccess } from "./permissions";
+import { isPublicPath } from "./public-paths";
 import { waLink } from "./media";
 
 test("admin can open every module", () => {
@@ -33,4 +34,11 @@ test("reception can open unofficial quotations", () => {
 
 test("whatsapp link normalizes jordanian mobiles", () => {
   assert.equal(waLink("0790001001", "hello"), "https://wa.me/962790001001?text=hello");
+});
+
+test("public quote path is treated as login-free", () => {
+  assert.equal(isPublicPath("/quote"), true);
+  assert.equal(isPublicPath("/login"), true);
+  assert.equal(isPublicPath("/quotations"), false);
+  assert.equal(isPublicPath("/quotations/new"), false);
 });

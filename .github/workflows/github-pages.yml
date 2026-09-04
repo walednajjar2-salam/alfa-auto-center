@@ -1,7 +1,9 @@
 name: github-pages
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - cursor/public-quote-site-d6b6
     paths:
       - "docs/**"
       - ".github/workflows/github-pages.yml"

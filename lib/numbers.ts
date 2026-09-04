@@ -24,6 +24,18 @@ export async function nextInvoiceNumber() {
   return `${prefix}${String(n).padStart(5, "0")}`;
 }
 
+export async function nextQuoteNumber() {
+  const year = new Date().getFullYear();
+  const prefix = `QT-${year}-`;
+  const last = await prisma.quotation.findFirst({
+    where: { quoteNumber: { startsWith: prefix } },
+    orderBy: { quoteNumber: "desc" },
+    select: { quoteNumber: true },
+  });
+  const n = last ? Number(last.quoteNumber.slice(-5)) + 1 : 1;
+  return `${prefix}${String(n).padStart(5, "0")}`;
+}
+
 export async function nextPurchaseNumber() {
   const year = new Date().getFullYear();
   const prefix = `PO-${year}-`;

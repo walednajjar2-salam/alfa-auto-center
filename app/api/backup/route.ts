@@ -8,13 +8,14 @@ export async function GET() {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
 
-  const [users, customers, vehicles, workOrders, invoices, payments, parts, suppliers, purchases, expenses, appointments, settings] =
+  const [users, customers, vehicles, workOrders, invoices, quotations, payments, parts, suppliers, purchases, expenses, appointments, settings] =
     await Promise.all([
       prisma.user.findMany({ select: { id: true, name: true, username: true, role: true, isActive: true, createdAt: true } }),
       prisma.customer.findMany(),
       prisma.vehicle.findMany(),
       prisma.workOrder.findMany({ include: { items: true, inspections: { include: { photos: true } } } }),
       prisma.invoice.findMany({ include: { items: true } }),
+      prisma.quotation.findMany({ include: { items: true } }),
       prisma.payment.findMany(),
       prisma.part.findMany(),
       prisma.supplier.findMany(),
@@ -31,6 +32,7 @@ export async function GET() {
     vehicles,
     workOrders,
     invoices,
+    quotations,
     payments,
     parts,
     suppliers,

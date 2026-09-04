@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
+import { ensureUnofficialRangeRoverQuote } from "../lib/ensure-quotation";
 
 const prisma = new PrismaClient();
 
@@ -16,8 +17,10 @@ async function main() {
     },
   });
 
+  await ensureUnofficialRangeRoverQuote(prisma);
+
   if (process.env.SEED_DEMO !== "true") {
-    console.log("Admin ready. Set SEED_DEMO=true to load sample workshop data.");
+    console.log("Admin ready. Unofficial Range Rover 2025 quotation ensured. Set SEED_DEMO=true to load sample workshop data.");
     return;
   }
 

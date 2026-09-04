@@ -12,6 +12,7 @@ const rules: { prefix: string; roles: UserRole[] }[] = [
   { prefix: "/parts", roles: ["ADMIN", "STORE", "TECHNICIAN"] },
   { prefix: "/inventory", roles: ["ADMIN", "STORE", "TECHNICIAN"] },
   { prefix: "/invoices", roles: ["ADMIN", "ACCOUNTING", "RECEPTION"] },
+  { prefix: "/quotations", roles: ["ADMIN", "ACCOUNTING", "RECEPTION"] },
   { prefix: "/payments", roles: ["ADMIN", "ACCOUNTING", "RECEPTION"] },
   { prefix: "/expenses", roles: ["ADMIN", "ACCOUNTING"] },
   { prefix: "/cash", roles: ["ADMIN", "ACCOUNTING"] },

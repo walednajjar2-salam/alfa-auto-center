@@ -3,6 +3,7 @@ import type {
   InvoiceStatus,
   PaymentMethod,
   PurchaseStatus,
+  QuotationStatus,
   UserRole,
   WorkOrderStatus,
 } from "@prisma/client";
@@ -40,6 +41,22 @@ export const invoiceStatusClass: Record<InvoiceStatus, string> = {
   ISSUED: "status-blue",
   PARTIAL: "status-gold",
   PAID: "status-green",
+  VOID: "status-red",
+};
+
+export const quotationStatusLabel: Record<QuotationStatus, string> = {
+  DRAFT: "مسودة",
+  ISSUED: "صادرة",
+  ACCEPTED: "مقبولة",
+  EXPIRED: "منتهية",
+  VOID: "ملغاة",
+};
+
+export const quotationStatusClass: Record<QuotationStatus, string> = {
+  DRAFT: "status-muted",
+  ISSUED: "status-blue",
+  ACCEPTED: "status-green",
+  EXPIRED: "status-gold",
   VOID: "status-red",
 };
 

@@ -2,8 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { updateCustomer } from "@/lib/actions/customers";
-import { vehicleTitle } from "@/lib/format";
-import { workOrderStatusClass, workOrderStatusLabel } from "@/lib/status";
+import { moneyLabel, vehicleTitle } from "@/lib/format";
+import { quotationStatusClass, quotationStatusLabel, workOrderStatusClass, workOrderStatusLabel } from "@/lib/status";
 import { PLACEHOLDERS, waLink } from "@/lib/media";
 import { getSettings } from "@/lib/settings";
 import ActionForm from "@/components/ActionForm";
@@ -21,6 +21,7 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
       include: {
         vehicles: { orderBy: { createdAt: "desc" } },
         workOrders: { take: 8, orderBy: { createdAt: "desc" }, include: { vehicle: true } },
+        quotations: { take: 8, orderBy: { createdAt: "desc" } },
       },
     }),
     getSettings(),
@@ -102,6 +103,31 @@ export default async function CustomerDetailPage({ params }: { params: Promise<{
                   <small>{vehicleTitle(order.vehicle)}</small>
                 </div>
                 <StatusBadge label={workOrderStatusLabel[order.status]} className={workOrderStatusClass[order.status]} />
+              </Link>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="panel">
+        <div className="panel-title">
+          <h2>عروض الأسعار</h2>
+          <Link href={`/quotations/new?customerId=${customer.id}`}>عرض جديد</Link>
+        </div>
+        {customer.quotations.length === 0 ? (
+          <p className="muted">لا توجد عروض أسعار</p>
+        ) : (
+          <div className="job-list">
+            {customer.quotations.map((quote) => (
+              <Link className="job-row" key={quote.id} href={`/quotations/${quote.id}`}>
+                <div>
+                  <strong>{quote.quoteNumber}</strong>
+                  <small>
+                    {quote.vehicleMake} {quote.vehicleModel}
+                    {quote.vehicleYear ? ` ${quote.vehicleYear}` : ""} · {moneyLabel(quote.total)}
+                  </small>
+                </div>
+                <StatusBadge label={quotationStatusLabel[quote.status]} className={quotationStatusClass[quote.status]} />
               </Link>
             ))}
           </div>

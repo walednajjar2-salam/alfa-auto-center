@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CalendarDays, CarFront, CircleDollarSign, ClipboardPlus, FileText, Search, ShieldCheck, Wrench } from "lucide-react";
+import { CalendarDays, CarFront, CircleDollarSign, ClipboardPlus, FileText, ScrollText, Search, ShieldCheck, Wrench } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { money, todayLabel, vehicleTitle } from "@/lib/format";
 import { workOrderStatusClass, workOrderStatusLabel } from "@/lib/status";
@@ -103,6 +103,10 @@ export default async function DashboardPage() {
           <Link href="/invoices">
             <FileText size={19} />
             <span>فاتورة</span>
+          </Link>
+          <Link href="/quotations">
+            <ScrollText size={19} />
+            <span>عرض سعر</span>
           </Link>
         </div>
       </section>

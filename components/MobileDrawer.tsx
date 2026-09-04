@@ -53,6 +53,7 @@ const groups = [
     icon: WalletCards,
     items: [
       { href: "/invoices", label: "الفواتير" },
+      { href: "/quotations", label: "عروض الأسعار" },
       { href: "/payments", label: "المدفوعات" },
       { href: "/expenses", label: "المصاريف" },
       { href: "/cash", label: "الصندوق" },

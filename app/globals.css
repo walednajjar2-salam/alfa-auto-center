@@ -67,10 +67,21 @@ a{color:inherit}.header-brand,.top-icon-button{text-decoration:none;color:inheri
 .list-card-body{flex:1;min-width:0}
 .print-logo{width:64px;height:64px;border-radius:14px;object-fit:cover;display:block;margin-bottom:8px}
 .print-receipt h1{margin:8px 0 4px;font-size:18px}
+.quote-items{display:grid;gap:10px}
+.quote-item-row{grid-template-columns:2fr .7fr 1fr}
+.quote-unofficial-banner{margin:0 0 12px;padding:8px 10px;border-radius:10px;background:#f7efd8;color:#8a6416;text-align:center;letter-spacing:.4px}
+.quote-stamp{margin:0 0 14px;color:#9b1c1c}
+.quote-terms{margin-top:16px;padding-top:12px;border-top:1px dashed var(--line)}
+.quote-terms h3{margin:0 0 8px;font-size:13px}
+.quote-terms ul{margin:0;padding-right:18px;color:var(--muted);line-height:1.7}
+.quote-signs{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:28px}
+.quote-signs div{min-height:64px;border-top:1px solid var(--line);padding-top:8px;color:var(--muted);text-align:center}
+@media (max-width:420px){.quote-item-row,.quote-signs{grid-template-columns:1fr}}
 @media print{
   .mobile-header,.bottom-nav,.no-print,.drawer-backdrop,.mobile-drawer{display:none!important}
   .app-shell{padding-bottom:0}
   .page-body{min-height:0}
   .dashboard-content{max-width:none;padding:0}
+  .quote-sheet{box-shadow:none}
 }
 

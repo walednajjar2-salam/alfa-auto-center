@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
+import { ensureUnofficialRangeRoverQuote } from "./ensure-quotation";
 
 let started = false;
 
@@ -16,6 +17,11 @@ export async function ensureAdmin() {
         role: "ADMIN",
       },
     });
+  }
+  try {
+    await ensureUnofficialRangeRoverQuote(prisma);
+  } catch (error) {
+    console.warn("Could not ensure unofficial Range Rover quotation", error);
   }
   started = true;
 }

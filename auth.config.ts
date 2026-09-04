@@ -1,5 +1,6 @@
 import type { NextAuthConfig } from "next-auth";
 import { canAccess } from "./lib/permissions";
+import { isPublicPath } from "./lib/public-paths";
 
 export const authConfig = {
   pages: { signIn: "/login" },
@@ -19,11 +20,7 @@ export const authConfig = {
     },
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
-      const isPublic =
-        nextUrl.pathname.startsWith("/login") ||
-        nextUrl.pathname.startsWith("/forgot-password") ||
-        nextUrl.pathname.startsWith("/api/auth");
-      if (isPublic) {
+      if (isPublicPath(nextUrl.pathname)) {
         if (isLoggedIn && nextUrl.pathname.startsWith("/login")) {
           return Response.redirect(new URL("/dashboard", nextUrl));
         }
